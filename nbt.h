@@ -118,7 +118,6 @@ void IntArray_destroy(Int_Array*);
 void LongArray_destroy(Long_Array*);
 void _GenericArray_destroy(GenericArray*);
 
-// not implemented yet
 /* traversal/access functions */
 NamedTag* Compound_find(Compound*, const char*);
 
