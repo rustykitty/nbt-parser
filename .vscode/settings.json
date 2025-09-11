@@ -40,6 +40,7 @@
         "span": "c",
         "vector": "c",
         "cerrno": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "_endian.h": "c"
     }
 }

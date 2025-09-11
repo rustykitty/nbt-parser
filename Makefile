@@ -4,7 +4,7 @@ LDLIBS += -lz
 # CFLAGS += -march=native
 CFLAGS += -std=gnu99 -Wall -Wextra
 CFLAGS += -O0 -g
-CFLAGS += -fsanitize=address,undefined,unreachable
+# CFLAGS += -fsanitize=address,undefined,unreachable
 
 main: nbt.o nbt_parser.o main.c
 	$(CC) $(CFLAGS) -o main main.c nbt.o nbt_parser.o $(LDLIBS)

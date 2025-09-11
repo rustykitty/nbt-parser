@@ -5,15 +5,33 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <endian.h>
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
 
-#ifndef NDEBUG
-#define DEBUG_PRINT(...) fprintf(stderr, __VA_ARGS__)
+#ifdef __APPLE__ 
+
+// assuming macOS
+#  include <machine/endian.h>
+
+#  define be16toh(x) ntohs(x)
+#  define be32toh(x) ntohl(x)
+#  define be64toh(x) ntohll(x)
+
+#  define htobe16(x) htons(x)
+#  define htobe32(x) htonl(x)
+#  define htobe64(x) htonll(x)
+
 #else
-#define DEBUG_PRINT(...)
+// Assuming Linux or UNIX-like that has endian.h
+#include <endian.h>
+#endif
+
+
+#ifndef NDEBUG
+#  define DEBUG_PRINT(...) fprintf(stderr, __VA_ARGS__)
+#else
+#  define DEBUG_PRINT(...)
 #endif
 
 NamedTag* _parse_named_tag(FILE* file) {
