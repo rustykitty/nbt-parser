@@ -104,6 +104,7 @@ void NamedTag_destroy(NamedTag* tag) {
         LongArray_free(tag->long_array_value);
         break;
     }
+    String_destroy(&tag->name);
 }
 
 void Byte_Array_destroy(Byte_Array* arr) {
@@ -166,8 +167,7 @@ void List_destroy(List* list) {
         }
         break;
     }
-    default:
-        // ?????
+    default:;
     }
     free(list->tags);
 }
