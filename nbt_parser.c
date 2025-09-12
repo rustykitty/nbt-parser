@@ -22,9 +22,22 @@
 #  define htobe32(x) htonl(x)
 #  define htobe64(x) htonll(x)
 
+#elif defined(_WIN32)
+// Windows
+
+#include <winsock2.h>
+
+#  define be16toh(x) ntohs(x)
+#  define be32toh(x) ntohl(x)
+#  define be64toh(x) ntohll(x)
+
+#  define htobe16(x) htons(x)
+#  define htobe32(x) htonl(x)
+#  define htobe64(x) htonll(x)
+
 #else
 // Assuming Linux or UNIX-like that has endian.h
-#include <endian.h>
+#  include <endian.h>
 #endif
 
 
