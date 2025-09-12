@@ -102,6 +102,7 @@ NamedTag* _parse_named_tag(FILE* file) {
         break;
     }
     case TAG_Int:
+    case TAG_Float:
     {
         Int value;
         if (!fread(&value, sizeof(Int), 1, file)) {
@@ -111,38 +112,13 @@ NamedTag* _parse_named_tag(FILE* file) {
         break;
     }
     case TAG_Long:
+    case TAG_Double:
     {
         Long value;
         if (!fread(&value, sizeof(Long), 1, file)) {
             goto error;
         }
         ret->long_value = be64toh(value);
-        break;
-    }
-    case TAG_Float:
-    {
-        union {
-            Int i;
-            Float f;
-        } value;
-        if (!fread(&value, sizeof(Int), 1, file)) {
-            goto error;
-        }
-        value.i = be32toh(value.i);
-        ret->float_value = value.f;
-        break;
-    }
-    case TAG_Double:
-    {
-        union {
-            Long l;
-            Double d;
-        } value;
-        if (!fread(&value, sizeof(Long), 1, file)) {
-            goto error;
-        }
-        value.l = be64toh(value.l);
-        ret->double_value = value.d;
         break;
     }
     case TAG_Byte_Array:
