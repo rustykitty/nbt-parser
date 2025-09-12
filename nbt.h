@@ -94,11 +94,6 @@ struct NamedTag {
     };
 };
 
-struct GenericArray {
-    Int length;
-    void* data;
-};
-
 /* free functions */
 void NamedTag_free(NamedTag*);
 void Byte_Array_free(Byte_Array*);
@@ -116,7 +111,6 @@ void List_destroy(List*);
 void Compound_destroy(Compound*);
 void IntArray_destroy(Int_Array*);
 void LongArray_destroy(Long_Array*);
-void _GenericArray_destroy(GenericArray*);
 
 /* traversal/access functions */
 NamedTag* Compound_find(Compound*, const char*);

@@ -35,6 +35,13 @@ const size_t sizeof_type[] = {
     [TAG_Long_Array] = sizeof(Long_Array)
 };
 
+static inline void _GenericArray_destroy(GenericArray*);
+
+struct GenericArray {
+    Int length;
+    void* data;
+};
+
 /* free functions */
 void NamedTag_free(NamedTag* tag) {
     NamedTag_destroy(tag);
@@ -187,7 +194,7 @@ void LongArray_destroy(Long_Array* arr) {
     return _GenericArray_destroy((GenericArray*) arr);
 }
 
-void _GenericArray_destroy(GenericArray* arr) {
+static inline void _GenericArray_destroy(GenericArray* arr) {
     free(arr->data);
 }
 
