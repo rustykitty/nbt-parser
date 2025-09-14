@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: '%HOMEDRIVE%%HOMEPATH%\AppData\Local\Temp\chocolatey'
-          key: ${{ runner.os }}-choco-${{ hashFiles('**/chocolatey.config') }}
+          key: ${{ runner.os }}-choco-${{ hashFiles('%ChocolateyInstall%\config\chocolatey.config') }}
       - name: Install build dependencies (Windows)
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
@@ -43,5 +43,4 @@ jobs:
       - name: Run tests
         run: |
           make test
-# AppData\Local\Temp\chocolatey
 #  echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
