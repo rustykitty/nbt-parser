@@ -34,6 +34,7 @@ jobs:
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
           choco install mingw make -y
+          echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
           echo "PATH=C:\ProgramData\chocolatey\bin;$PATH" >> $env:GITHUB_ENV
           echo "CC=gcc" >> $env:GITHUB_ENV
           echo "CXX=g++" >> $env:GITHUB_ENV
@@ -43,4 +44,3 @@ jobs:
       - name: Run tests
         run: |
           make test
-#  echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
