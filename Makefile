@@ -15,7 +15,10 @@ nbt.o: nbt.c nbt.h
 nbt_parser.o: nbt_parser.c nbt_parser.h nbt.o
 	$(CC) $(CFLAGS) -c nbt_parser.c
 
-.PHONY: clean
+.PHONY: clean test
 
 clean:
 	rm -f main *.o
+
+test: main
+	./main nbt/bigtest.nbt
