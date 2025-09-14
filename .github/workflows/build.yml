@@ -27,11 +27,13 @@ jobs:
       - name: Install build dependencies (Windows)
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
-          choco install mingw -y
+          choco install mingw make -y
           echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
+          echo "PATH=C:\ProgramData\chocolatey\bin;$PATH" >> $env:GITHUB_ENV
       - name: Build
         run: |
           make
       - name: Run tests
         run: |
           make test
+# AppData\Local\Temp\chocolatey
