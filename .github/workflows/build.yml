@@ -24,12 +24,19 @@ jobs:
           echo "PATH=$HOMEBREW_PREFIX/opt/make/libexec/gnubin:$PATH" >> $GITHUB_ENV
           ln -sf $(brew --prefix gcc)/bin/gcc-14 /usr/local/bin/gcc
           ln -sf $(brew --prefix gcc)/bin/g++-14 /usr/local/bin/g++
+      - name: Chocolatey cache (Windows)
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        uses: actions/cache@v4
+        with:
+          path: C:\Users\<username>\AppData\Local\Temp\chocolatey
+          key: ${{ runner.os }}-choco-${{ hashFiles('**/chocolatey.config') }}
       - name: Install build dependencies (Windows)
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
           choco install mingw make -y
-          echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
           echo "PATH=C:\ProgramData\chocolatey\bin;$PATH" >> $env:GITHUB_ENV
+          echo "CC=gcc" >> $env:GITHUB_ENV
+          echo "CXX=g++" >> $env:GITHUB_ENV
       - name: Build
         run: |
           make
@@ -37,3 +44,4 @@ jobs:
         run: |
           make test
 # AppData\Local\Temp\chocolatey
+#  echo "PATH=C:\Program Files\mingw-w64\mingw64\bin;$PATH" >> $env:GITHUB_ENV
