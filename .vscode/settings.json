@@ -41,6 +41,9 @@
         "vector": "c",
         "cerrno": "c",
         "errno.h": "c",
-        "_endian.h": "c"
+        "_endian.h": "c",
+        "zpipe.h": "c",
+        "zlib.h": "c",
+        "zconf.h": "c"
     }
 }

@@ -3,15 +3,12 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <libgen.h>
-
-// stop giving me warnings from zpipe.c please and thank you
-#pragma GCC diagnostic push
-
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#include <string.h>
+#include <assert.h>
 
 // hackish way to not get a compilation error because of Byte typedef
 #define Byte Zlib_Byte
-#include "zpipe.c"
+#include "zpipe.h"
 #undef Byte
 
 #pragma GCC diagnostic pop
