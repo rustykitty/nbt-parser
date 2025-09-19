@@ -2,7 +2,7 @@ LDLIBS += -lz
 
 # CFLAGS += -O3
 # CFLAGS += -march=native
-CFLAGS += -std=gnu99 -Wall -Wextra
+CFLAGS += -std=gnu99 -Wall -Wextra -pipe
 CFLAGS += -O0 -g
 # CFLAGS += -fsanitize=address,undefined,unreachable
 
