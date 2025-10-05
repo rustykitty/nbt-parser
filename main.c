@@ -5,11 +5,8 @@
 #include <libgen.h>
 #include <string.h>
 #include <assert.h>
-
-// hackish way to not get a compilation error because of Byte typedef
-#define Byte Zlib_Byte
-#include "zpipe.h"
-#undef Byte
+#include <fcntl.h>
+#include <unistd.h>
 
 #pragma GCC diagnostic pop
 
@@ -24,82 +21,75 @@ int main(int argc, char* argv[]) {
 
     const char* filename = argc > 1 ? argv[1] : default_file;
 
-    FILE* input = fopen(filename, "rb");
-    if (!input) {
-        perror(filename);
-        return 1;
-    }
+    int inputfd;
 
-    bool is_gzipped;
-    bool is_deflated;
-    {
-        // cast to char because C++11 narrowing conversions
-        char gzip_magic[2] = { 0x1f, (char)0x8b };
-        char deflate_magic = 0x78;
-        char buf[2];
-        if (!fread(buf, 2, 1, input)) {
-            if (ferror(input)) {
-                perror("Error reading input file");
-            } else if (feof(input)) {
-                fprintf(stderr, "Unexpected end of file\n");
-            }
-            fclose(input);
-            return 1;
-        }
-        is_gzipped = memcmp(buf, gzip_magic, 2) == 0;
-        is_deflated = buf[0] == deflate_magic;
-        fseek(input, 0, SEEK_SET);
-    }
-
-    assert(!(is_gzipped && is_deflated));
-
-    char* buffer = NULL;
-    size_t buffer_length = 0;
-
-    NamedTag* tag;
-
-    if (is_gzipped || is_deflated) {
-        FILE* stream = open_memstream(&buffer, &buffer_length);
-
-        int ret = inf(input, stream, is_gzipped);
-        if (ret != Z_OK) {
-            zerr(ret);
-            return 1;
-        }
-
-        fclose(stream);
-        tag = parse_named_tag_from_buffer(buffer, buffer_length);
+    if (strcmp(filename, "-") == 0) {
+        inputfd = STDIN_FILENO;
     } else {
-        // tag = parse_named_tag(stdin);
-        fseek(input, 0, SEEK_END);
-        buffer_length = ftell(input);
-        fseek(input, 0, SEEK_SET);
-        buffer = (char*) malloc(buffer_length);
-        if (!buffer) {
-            perror("Memory allocation failed");
-            return 1;
+
+        inputfd = open(filename, O_RDONLY);
+
+        if (inputfd == -1) {
+            perror("open");
+            return errno;
         }
-        if (!fread(buffer, 1, buffer_length, input)) {
-            perror("Error reading file");
-            return 1;
-        }
-        tag = parse_named_tag_from_buffer(buffer, buffer_length);
     }
 
-    fclose(input);
+    // {read_file, write_file}
+    int writepipe[2]; // to child
+    int readpipe[2]; // to parent
 
+    pid_t childpid = -1;
 
-    if (!tag) {
-        free(buffer);
-        return 1;
+    if (pipe(writepipe) < 0 || pipe(readpipe) < 0) {
+        // an error occurred
+        perror("pipe");
+        return errno;
     }
 
-    traverse(tag);
+    dup2(inputfd, writepipe[0]);
+    close(inputfd);
 
-    free(buffer);
-    NamedTag_free(tag);
+    if ((childpid = fork()) < 0) {
+        // Failure to fork
+        perror("fork");
+    } else if (childpid == 0) {
+        // Child process
+        close(writepipe[1]);
+        close(readpipe[0]);
+        
+        dup2(writepipe[0], STDIN_FILENO);
+        close(writepipe[0]);
+        dup2(readpipe[1], STDOUT_FILENO);
+        close(readpipe[1]);
 
-    return 0;
+        execl("./zpipe", "zpipe", "-d", NULL);
+
+    } else {
+        // Parent process
+        close(writepipe[0]);
+        close(readpipe[1]);
+
+        FILE* decompressed_stream = fdopen(readpipe[0], "rb");
+
+        NamedTag* tag;
+
+        tag = parse_named_tag(decompressed_stream);
+
+        fclose(decompressed_stream);
+
+        if (!tag) {
+            return 1;
+        }
+
+        traverse(tag);
+
+        NamedTag_free(tag);
+
+        return 0;
+
+    }
+
 }
 
 #undef traverse

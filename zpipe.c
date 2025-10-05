@@ -7,6 +7,15 @@ Below source is derived from https://zlib.net/zpipe.c
 #include <assert.h>
 #include "zlib.h"
 
+#if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
+#  include <fcntl.h>
+#  include <io.h>
+#  define SET_BINARY_MODE(file) setmode(fileno(file), O_BINARY)
+#else
+#  define SET_BINARY_MODE(file)
+#endif
+
+
 #define CHUNK 16384
 
 /* Compress from file source to file dest until EOF on source.
@@ -72,7 +81,7 @@ int def(FILE *source, FILE *dest, int level)
    invalid or incomplete, Z_VERSION_ERROR if the version of zlib.h and
    the version of the library linked do not match, or Z_ERRNO if there
    is an error reading or writing the files. */
-int inf(FILE *source, FILE *dest, int gzip)
+int inf(FILE *source, FILE *dest)
 {
     int ret;
     unsigned have;
@@ -86,10 +95,7 @@ int inf(FILE *source, FILE *dest, int gzip)
     strm.opaque = Z_NULL;
     strm.avail_in = 0;
     strm.next_in = Z_NULL;
-    if (gzip) 
-        ret = inflateInit2(&strm, 15 + 32);
-    else 
-        ret = inflateInit(&strm);
+    ret = inflateInit2(&strm, 15 + 32);
     if (ret != Z_OK)
         return ret;
 
@@ -155,5 +161,37 @@ void zerr(int ret)
         break;
     case Z_VERSION_ERROR:
         fputs("zlib version mismatch!\n", stderr);
+    }
+}
+
+/* compress or decompress from stdin to stdout */
+int main(int argc, char **argv)
+{
+    int ret;
+
+    /* avoid end-of-line conversions */
+    SET_BINARY_MODE(stdin);
+    SET_BINARY_MODE(stdout);
+
+    /* do compression if no arguments */
+    if (argc == 1) {
+        ret = def(stdin, stdout, Z_DEFAULT_COMPRESSION);
+        if (ret != Z_OK)
+            zerr(ret);
+        return ret;
+    }
+
+    /* do decompression if -d specified */
+    else if (argc == 2 && strcmp(argv[1], "-d") == 0) {
+        ret = inf(stdin, stdout);
+        if (ret != Z_OK)
+            zerr(ret);
+        return ret;
+    }
+
+    /* otherwise, report usage */
+    else {
+        fputs("zpipe usage: zpipe [-d] < source > dest\n", stderr);
+        return 1;
     }
 }

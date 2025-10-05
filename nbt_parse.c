@@ -48,7 +48,6 @@
 #endif
 
 NamedTag* _parse_named_tag(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     NamedTag* ret = (NamedTag*) calloc(1, sizeof(NamedTag));
     Byte type;
     if (!fread(&type, sizeof(Byte), 1, file)) {
@@ -174,7 +173,7 @@ NamedTag* parse_named_tag(FILE* file) {
     if (!tag) {
         if (feof(file)) {
             fprintf(stderr, "Unexpected end of file\n");
-        } 
+        }
         fprintf(stderr, "Failed to parse NBT data\n"
                             "Errno may provide more information:\n"
                             "Errno %d: %s\n", errno, strerror(errno));
@@ -200,7 +199,6 @@ NamedTag* parse_named_tag_from_buffer(char* buffer, size_t length) {
 }
 
 Byte_Array* _parse_byte_array(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     Int length;
     if (!fread(&length, sizeof(Int), 1, file)) {
         return NULL;
@@ -225,7 +223,6 @@ Byte_Array* _parse_byte_array(FILE* file) {
 }
 
 String* _parse_string(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     Short length;
     if (!fread(&length, sizeof(Short), 1, file)) {
         return NULL;
@@ -259,7 +256,6 @@ String* _parse_string(FILE* file) {
 }
 
 List* _parse_list(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     Byte type;
     if (!fread(&type, sizeof(Byte), 1, file)) {
         return NULL;
@@ -411,7 +407,6 @@ List* _parse_list(FILE* file) {
 }
 
 Compound* _parse_compound(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     static const size_t INITIAL_CAPACITY = 64;
 
     // dynamic array init
@@ -464,7 +459,6 @@ Compound* _parse_compound(FILE* file) {
 }
 
 Int_Array* _parse_int_array(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     Int length;
     if (!fread(&length, sizeof(Int), 1, file)) {
         return NULL;
@@ -492,7 +486,6 @@ Int_Array* _parse_int_array(FILE* file) {
 }
 
 Long_Array* _parse_long_array(FILE* file) {
-    DEBUG_PRINT("In %s, ftell(file) = %04lx\n", __func__, ftell(file));
     Int length;
     if (!fread(&length, sizeof(Int), 1, file)) {
         return NULL;

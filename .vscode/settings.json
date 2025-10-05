@@ -44,6 +44,8 @@
         "_endian.h": "c",
         "zpipe.h": "c",
         "zlib.h": "c",
-        "zconf.h": "c"
+        "zconf.h": "c",
+        "unistd.h": "c",
+        "cstdio": "cpp"
     }
 }

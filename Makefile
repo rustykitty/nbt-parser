@@ -6,8 +6,8 @@ CFLAGS += -std=gnu99 -Wall -Wextra -pipe
 CFLAGS += -O0 -g
 # CFLAGS += -fsanitize=address,undefined,unreachable
 
-main: nbt.o nbt_parse.o zpipe.o nbt_traverse.o main.c
-	$(CC) $(CFLAGS) -o main main.c nbt.o nbt_parse.o zpipe.o nbt_traverse.o $(LDLIBS)
+main: nbt.o nbt_parse.o nbt_traverse.o main.c zpipe
+	$(CC) $(CFLAGS) -o main main.c nbt.o nbt_parse.o nbt_traverse.o $(LDLIBS)
 
 nbt.o: nbt.c nbt.h
 	$(CC) $(CFLAGS) -c nbt.c
@@ -15,8 +15,8 @@ nbt.o: nbt.c nbt.h
 nbt_parse.o: nbt_parse.c nbt_parse.h nbt.o
 	$(CC) $(CFLAGS) -c nbt_parse.c
 
-zpipe.o: zpipe.c zpipe.h
-	$(CC) $(CFLAGS) -Wimplicit-fallthrough=0 -c zpipe.c
+zpipe.c:
+	$(CC) $(CFLAGS) -Wimplicit-fallthrough=0 -o zpipe zpipe.c
 
 nbt_traverse.o: nbt_traverse.c nbt_traverse.h
 	$(CC) $(CFLAGS) -c nbt_traverse.c
@@ -24,4 +24,4 @@ nbt_traverse.o: nbt_traverse.c nbt_traverse.h
 .PHONY: clean
 
 clean:
-	rm -f main *.o
+	rm -f main zpipe *.o
