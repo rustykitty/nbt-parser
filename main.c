@@ -14,7 +14,7 @@
 #pragma GCC diagnostic pop
 
 #include "nbt.h"
-#include "nbt_parser.h"
+#include "nbt_parse.h"
 
 static void _traverse(NamedTag* root, const int level);
 

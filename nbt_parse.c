@@ -1,6 +1,6 @@
 #define _DEFAULT_SOURCE
 
-#include "nbt_parser.h"
+#include "nbt_parse.h"
 #include "nbt.h"
 
 #include <stdio.h>

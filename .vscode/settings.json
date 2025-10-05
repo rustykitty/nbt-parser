@@ -17,7 +17,7 @@
         "in.h": "c",
         "stdint-uintn.h": "c",
         "cstdint": "c",
-        "nbt_parser.h": "c",
+        "nbt_parse.h": "c",
         "numeric": "c",
         "iostream": "c",
         "istream": "c",
