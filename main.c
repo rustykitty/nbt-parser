@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
     int inputfd;
 
     if (strcmp(filename, "-") == 0) {
+        if (isatty(STDIN_FILENO)) {
+            fprintf(stderr, "warning: stdin is a terminal");
+        }
         inputfd = STDIN_FILENO;
     } else {
 
