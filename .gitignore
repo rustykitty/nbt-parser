@@ -97,3 +97,4 @@ dkms.conf
 *.o
 **/*.o
 main
+zpipe
